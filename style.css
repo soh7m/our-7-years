@@ -1,0 +1,267 @@
+/* RESET & BASICS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    /* This creates the static background */
+    background: linear-gradient(to bottom, #fff0f3, #ffe3e8); 
+    background-attachment: fixed; /* <--- THE MAGIC LINE */
+    background-size: cover;
+    color: #4a4a4a;
+    line-height: 1.6;
+    overflow-x: hidden; /* Prevents side-scroll bars */
+    scroll-snap-type: y proximity;  /* <--- 'Proximity' is much softer */
+    
+    overflow-y: scroll;
+    height: 100vh;
+}
+
+/* HERO SECTION */
+.hero {
+    height: 100vh; /* Full screen height */
+    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('images/cover.jpg'); /* Uses your latest photo as background */
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+}
+
+.hero h1 {
+    font-family: 'Dancing Script', cursive; /* Fancy romantic font */
+    font-size: 5rem;
+    margin-bottom: 20px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 15px 30px;
+    background-color: #ff4d6d; /* Romantic red/pink */
+    color: white;
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: bold;
+    transition: transform 0.3s;
+}
+
+.btn:hover {
+    transform: scale(1.1); /* Button grows when hovered */
+}
+
+/* TIMELINE CONTAINER */
+.container {
+    max-width: 800px; /* Slightly narrower for focus */
+    margin: 0 auto;
+    /*padding-top: 150px;*/
+    padding-bottom: 100px; /* Extra space before footer */
+}
+
+/* MEMORY CARD - DEFAULT STATE (HIDDEN) */
+.memory-card {
+    display: flex;
+    align-items: center;
+    background: white;
+    
+    /* Huge margin ensures only one card is on screen at a time */
+    /*margin-bottom: 80vh;*/ /* 80% of screen height gap */
+    
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    
+    /* ANIMATION SETUP */
+    opacity: 0; /* Invisible */
+    transition: all 0.6s ease-in-out; /* Smooth fade in/out */
+    
+    /* Default position: Pushed to the LEFT */
+    transform: translateX(-100px) scale(0.9);
+}
+
+.photo-frame, .text-content {
+    flex: 1; /* Split space 50/50 */
+    padding: 0;
+}
+
+.photo-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures photos don't stretch weirdly */
+    display: block;
+}
+
+.text-content {
+    padding: 40px;
+}
+
+.text-content h2 {
+    color: #ff4d6d;
+    margin-bottom: 15px;
+    font-size: 2rem;
+}
+
+/* REVERSE CARD - DEFAULT STATE (HIDDEN) */
+.memory-card.reverse {
+    flex-direction: row-reverse;
+    /* Default position: Pushed to the RIGHT */
+    transform: translateX(100px) scale(0.9);
+}
+
+/* THE "VISIBLE" STATE (JavaScript will add this class) */
+.memory-card.show {
+    opacity: 1;              /* Fully visible */
+    transform: translateX(0); /* Back to original position */
+}
+
+/* --- THE ACTIVE STATE (Visible) --- */
+/* This class is added by JS when the card is in the center */
+.memory-card.active {
+    opacity: 1;
+    transform: translateX(0) scale(1); /* Center and full size */
+}
+
+/* MOBILE RESPONSIVENESS */
+@media (max-width: 768px) {
+    .hero h1 { font-size: 3rem; }
+    
+    .memory-card, .memory-card.reverse {
+        flex-direction: column; /* Stack vertically on phones */
+    }
+    
+    .photo-frame {
+        height: 300px;
+        width: 100%;
+    }
+}
+
+/* FLOATING MUSIC BUTTON */
+.music-btn {
+    position: fixed; /* Stays in one place while scrolling */
+    bottom: 20px;
+    right: 20px;
+    background-color: #ff4d6d;
+    color: white;
+    border: none;
+    padding: 15px 25px;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    z-index: 1000; /* Ensures it sits on top of images */
+    transition: all 0.3s ease;
+}
+
+.music-btn:hover {
+    background-color: #d63353; /* Darker red on hover */
+    transform: scale(1.05);
+}
+
+/* FOOTER ANIMATION */
+footer {
+    opacity: 0;
+    transform: translateY(100px); /* Pushed down */
+    transition: all 0.8s ease-out;
+    text-align: center;
+    padding: 50px;
+    background: white;
+    color: #ff4d6d;
+}
+
+/* FOOTER ACTIVE STATE */
+footer.active {
+    opacity: 1;
+    transform: translateY(0); /* Slide up */
+}
+
+/* ARROWS */
+/* ARROW CONTAINER */
+.scroll-arrow {
+    position: absolute;
+    bottom: 30px; /* Sits at the bottom of the screen */
+    left: 50%;
+    transform: translateX(-50%);
+    cursor: pointer;
+    z-index: 100;
+    padding: 20px; /* Increases clickable area */
+    opacity: 0.6;
+    transition: opacity 0.3s;
+}
+
+.scroll-arrow:hover {
+    opacity: 1; /* Brighter when hovered */
+}
+
+/* THE ARROW GRAPHICS (CSS Magic) */
+.scroll-arrow span {
+    display: block;
+    width: 20px;
+    height: 20px;
+    border-bottom: 3px solid #ff4d6d; /* Romantic Pink */
+    border-right: 3px solid #ff4d6d;
+    transform: rotate(45deg);
+    margin: -10px; /* Stacks them slightly */
+    animation: animate 2s infinite;
+}
+
+/* DELAY EACH ARROW PART FOR A WAVE EFFECT */
+.scroll-arrow span:nth-child(2) {
+    animation-delay: -0.2s;
+}
+.scroll-arrow span:nth-child(3) {
+    animation-delay: -0.4s;
+}
+
+/* BOUNCE ANIMATION */
+@keyframes animate {
+    0% {
+        opacity: 0;
+        transform: rotate(45deg) translate(-20px, -20px);
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        transform: rotate(45deg) translate(20px, 20px);
+    }
+}
+
+/* 1. THE SNAP AREA (The Full Screen Section) */
+.snap-area {
+    /* Takes up exactly one full screen height */
+    height: 100vh; 
+    width: 100%;
+    
+    /* Tells browser: "Stop scrolling here" */
+    scroll-snap-align: start; 
+    
+    /* Necessary for positioning the wrapper inside */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+/* 2. THE MEMORY WRAPPER (Holds Card + Arrow) */
+.memory-wrapper {
+    position: relative; /* Essential for arrow positioning */
+    width: 100%;
+    height: 100%;       /* Fills the snap-area */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 3. MOBILE FIX for Snap Areas */
+@media (max-width: 768px) {
+    .snap-area {
+        height: auto; /* Allow flexible height on mobile if content is long */
+        min-height: 100vh;
+        padding: 40px 0;
+    }
+}
